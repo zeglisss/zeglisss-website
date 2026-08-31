@@ -1,0 +1,298 @@
+/* === Base Styles === */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+}
+
+* {
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+pre {
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+a:hover {
+  color: #343a40;
+}
+
+hr {
+  margin: 3rem 0;
+}
+
+/* === All Headings Right-Aligned === */
+h1, h2, h3, h4, h5, h6 {
+  text-align: right;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+/* === Layout === */
+.right-align {
+  text-align: right;
+}
+
+.left-align {
+  text-align: left;
+}
+
+/* === Header & Navigation === */
+.site-header {
+  text-align: right;
+  padding-right: 1rem;
+  margin-bottom: 3rem;
+}
+
+.site-header h2 {
+  margin-bottom: 0.5rem;
+}
+
+.site-header nav {
+  color: #6c757d;
+}
+
+/* === Full-Width Elements === */
+.image-wrapper {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+.full-width-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+.image-caption {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 0.5rem;
+  font-size: 0.85rem;
+  color: #6c757d;
+  background-color: rgba(255, 255, 255, 0.6);
+  padding: 0.2rem 0.5rem;
+}
+
+/* === Section Bars === */
+.section-bar {
+  width: 100%;
+  padding: 0.75rem 0;
+  margin-bottom: 2rem;
+  text-align: right;
+  padding-right: 1rem;
+}
+
+.section-bar h4,
+.section-bar h5,
+.section-bar h6 {
+  margin: 0;
+  font-weight: 500;
+  text-align: right;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+.bar-dark {
+  background-color: #e0e0e0;
+}
+
+.bar-light {
+  background-color: #f0f0f0;
+}
+
+.bar-subtle h6 {
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  color: #6c757d;
+}
+
+/* === Content Blocks === */
+.content-block {
+  max-width: 700px;
+  margin: 0 1rem 2rem auto;
+  text-align: right;
+}
+
+.content-block-left {
+  max-width: 700px;
+  margin: 0 auto 2rem 1rem;
+  text-align: left;
+}
+
+/* === Writing Entries === */
+.entry {
+  max-width: 700px;
+  margin: 0 1rem 1.75rem auto;
+  text-align: right;
+}
+
+.entry h5 {
+  font-weight: 500;
+  margin-bottom: 0.15rem;
+  text-align: right;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+.entry .meta {
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+/* === Reading Entries === */
+.reading-entry {
+  max-width: 800px;
+  margin: 0 auto 4rem 1rem;
+}
+
+.reading-entry p:first-of-type {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.reading-meta {
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  color: #6c757d;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+blockquote {
+  max-width: 700px;
+  margin: 0 auto 1.5rem 1rem;
+  border-left: 3px solid #ccc;
+  padding-left: 1rem;
+  font-style: italic;
+  color: #333;
+}
+
+.reading-note {
+  max-width: 640px;
+  margin: 0 auto 1rem 2.25rem;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.reading-note-italic {
+  max-width: 700px;
+  margin: 0 auto 1rem 1rem;
+  font-style: italic;
+  color: #666;
+}
+
+/* === Individual Piece Pages === */
+.piece {
+  margin: 0;
+  padding: 2rem;
+}
+
+.piece-title {
+  text-align: right;
+  margin-bottom: 2rem;
+}
+
+.piece-title h3,
+.piece-title h4 {
+  font-weight: 500;
+  margin: 0;
+  text-align: right;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+.piece-title .meta {
+  font-size: 0.85rem;
+  color: #6c757d;
+  text-align: right;
+}
+
+.piece-title .meta pre {
+  text-align: right;
+  font-family: Helvetica, Arial, sans-serif;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.piece-text {
+  text-align: left;
+  width: 100%;
+  margin: 0;
+  padding-left: 0;
+}
+
+.piece-text iframe {
+  width: 100%;
+  height: 80vh;
+  border: none;
+  margin-top: 1rem;
+}
+
+/* === Utility Classes === */
+.text-muted {
+  color: #6c757d;
+}
+
+.mb-small {
+  margin-bottom: 0.5rem;
+}
+
+.mb-medium {
+  margin-bottom: 1rem;
+}
+
+.mb-large {
+  margin-bottom: 2rem;
+}
+
+/* === Mobile Responsive === */
+@media (max-width: 768px) {
+  .site-header {
+    padding-right: 0.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .site-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .section-bar {
+    padding-right: 0.5rem;
+  }
+
+  .content-block,
+  .content-block-left,
+  .entry,
+  .reading-entry {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+  }
+
+  .piece {
+    padding: 1rem;
+  }
+
+  .piece-title h3,
+  .piece-title h4 {
+    font-size: 1.25rem;
+  }
+
+  blockquote {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+  }
+
+  .reading-note {
+    margin-left: 1rem;
+    margin-right: 0.5rem;
+  }
+}

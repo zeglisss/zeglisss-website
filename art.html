@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Visual Art — Sophia Zeglis</title>
+  <link rel="stylesheet" href="main.css">
+  <style>
+    .art-gallery {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 2rem 1.25rem;
+      padding: 0 1rem;
+      margin-bottom: 4rem;
+    }
+
+    .art-piece {
+      min-width: 0;
+    }
+
+    .art-piece a {
+      display: block;
+    }
+
+    .art-piece img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      display: block;
+      margin-bottom: 0.75rem;
+    }
+
+    .art-caption {
+      margin: 0;
+      text-align: right;
+    }
+
+    .art-caption h5 {
+      font-weight: 500;
+      margin: 0 0 0.1rem;
+    }
+
+    .art-caption .meta {
+      font-size: 0.85rem;
+      color: #6c757d;
+    }
+
+    @media (max-width: 900px) {
+      .art-gallery {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 520px) {
+      .art-gallery {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+        padding: 0 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="site-header">
+    <h2>Sophia Zeglis</h2>
+    <nav>
+      <a href="index.html">home</a> / <a href="writings.html">writings</a> / <a href="readings.html">readings</a>
+    </nav>
+  </div>
+
+  <!-- Section Header -->
+  <div class="section-bar bar-subtle">
+    <hr style="margin: 2.5rem 0 0.75rem 0;">
+    <h6></h6>
+  </div>
+  <main class="art-gallery">
+    <!-- Copy one art-piece block to add another work. -->
+    <div class="art-piece">
+      <a href="https://i.imgur.com/75W42rY.jpeg">
+        <img src="https://i.imgur.com/75W42rY.jpeg" alt="Terrain" loading="lazy">
+      </a>
+      <div class="art-caption">
+        <h5>Terrain</h5>
+        <div class="meta">Mixed media collage · 2025</div>
+      </div>
+    </div>
+
+    <div class="art-piece">
+      <a href="https://i.imgur.com/TRMEMPQ.jpeg">
+        <img src="https://i.imgur.com/TRMEMPQ.jpeg" alt="Endure" loading="lazy">
+      </a>
+      <div class="art-caption">
+        <h5>Endure</h5>
+        <div class="meta">Mixed media collage · 2025</div>
+      </div>
+    </div>
+
+    <div class="art-piece">
+      <a href="https://i.imgur.com/z3eK2xv.jpeg">
+        <img src="https://i.imgur.com/z3eK2xv.jpeg" alt="Detail" loading="lazy">
+      </a>
+      <div class="art-caption">
+        <h5>Detail</h5>
+        <div class="meta">Mixed media collage · 2025</div>
+      </div>
+    </div>
+
+    <div class="art-piece">
+      <a href="https://i.imgur.com/5k1RdQz.jpeg">
+        <img src="https://i.imgur.com/5k1RdQz.jpeg" alt="Never Miss" loading="lazy">
+      </a>
+      <div class="art-caption">
+        <h5>Never Miss</h5>
+        <div class="meta">Mixed media collage · 2025</div>
+      </div>
+    </div>
+
+    <div class="art-piece">
+      <a href="https://i.imgur.com/VIPG2Vo.jpeg">
+        <img src="https://i.imgur.com/VIPG2Vo.jpeg" alt="Drive" loading="lazy">
+      </a>
+      <div class="art-caption">
+        <h5>Drive</h5>
+        <div class="meta">Mixed media collage · 2025</div>
+      </div>
+    </div>
+  </main>
+
+  <hr>
+
+  <!-- Footer -->
+  <div class="content-block text-muted">
+    <p><a href="index.html">← back</a></p>
+  </div>
+
+</body>
+</html>
