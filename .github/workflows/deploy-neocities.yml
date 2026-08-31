@@ -1,0 +1,41 @@
+name: Deploy to Neocities
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-to-neocities
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy site
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Prepare website files
+        run: |
+          mkdir public
+          rsync -av \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='public/' \
+            ./ public/
+
+      - name: Deploy to Neocities
+        uses: bcomnes/deploy-to-neocities@v3
+        with:
+          api_key: ${{ secrets.NEOCITIES_API_TOKEN }}
+          cleanup: false
+          neocities_supporter: false
+          preview_before_deploy: true
+          dist_dir: public
