@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sophia Zeglis</title>
+  <link rel="stylesheet" href="main.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="site-header">
+    <h2>Sophia Zeglis</h2>
+    <nav>
+      <a href="writings.html">writings</a> / <a href="art.html">art</a> / <a href="readings.html">readings</a>
+    </nav>
+  </div>
+
+  <!-- Artwork -->
+  <div class="image-wrapper">
+    <img src="https://i.imgur.com/75W42rY.jpeg"
+         alt="Terrain, mixed media collage (2025)"
+         class="full-width-img">
+    <p class="image-caption">Terrain, mixed media collage (2025)</p>
+  </div>
+
+  <hr>
+
+  <!-- Currently Reading Section -->
+  <div class="section-bar bar-dark">
+    <h4>Currently Reading</h4>
+  </div>
+
+  <div class="content-block-left" id="currently-reading">
+    <p><strong>Loading...</strong></p>
+  </div>
+
+  <hr>
+
+  <!-- Artwork -->
+  <div class="image-wrapper">
+    <img src="https://i.imgur.com/TRMEMPQ.jpeg"
+         alt="Endure, mixed media collage (2025)"
+         class="full-width-img">
+    <p class="image-caption">Endure, mixed media collage (2025)</p>
+  </div>
+
+  <hr>
+
+  <!-- Contact Section -->
+  <div class="section-bar bar-light">
+    <h4>Contact</h4>
+  </div>
+
+  <div class="content-block">
+    <h5 class="mb-small">Who?</h5>
+    <p class="mb-medium">
+      Sophia Zeglis is in her third year of pursuing a double major in English Literature 
+      and Creative Writing at the University of Chicago
+    </p>
+
+    <h5 class="mb-small">How?</h5>
+    <p class="mb-small">zeglis@uchicago.edu</p>
+    <p>
+      <a href="https://myhandinthecircle.substack.com/?utm_source=substack&utm_medium=web&utm_campaign=substack_profile"
+         target="_blank" rel="noopener noreferrer">
+        My Substack
+      </a>
+    </p>
+  </div>
+
+  <!-- Script to load latest reading -->
+  <script>
+    fetch('readings.html')
+      .then(r => r.text())
+      .then(html => {
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const latest = doc.querySelector('.reading-entry');
+        
+        if (latest) {
+          const container = document.getElementById('currently-reading');
+          const title = latest.querySelector('p:first-of-type');
+          const quote = latest.querySelector('blockquote');
+          
+          let content = '';
+          if (title) {
+            content += `<p class="mb-small"><strong>${title.innerHTML}</strong></p>`;
+          }
+          if (quote) {
+            content += `<blockquote class="left-align">${quote.innerHTML}</blockquote>`;
+          }
+          
+          container.innerHTML = content;
+        }
+      })
+      .catch(err => console.error('Failed to load reading:', err));
+  </script>
+
+</body>
+</html>
