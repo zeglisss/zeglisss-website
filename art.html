@@ -117,31 +117,14 @@
       cursor: pointer;
     }
 
-    .zoom-controls {
+    .lightbox-help {
       position: fixed;
       top: 1rem;
       left: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
       color: #6c757d;
       font-size: 0.75rem;
-      letter-spacing: 0.05em;
-    }
-
-    .zoom-controls button {
-      min-width: 2rem;
-      padding: 0.2rem 0.45rem;
-      border: 1px solid #d7d7d7;
-      background: rgba(255, 255, 255, 0.9);
-      color: inherit;
-      font: inherit;
-      cursor: pointer;
-    }
-
-    .zoom-level {
-      min-width: 3.25rem;
-      text-align: center;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
     @media (max-width: 520px) {
@@ -243,11 +226,7 @@
   </main>
 
   <dialog class="lightbox" id="lightbox" aria-label="Expanded artwork">
-    <div class="zoom-controls" aria-label="Zoom controls">
-      <button class="zoom-out" type="button" aria-label="Zoom out">−</button>
-      <span class="zoom-level" aria-live="polite">100%</span>
-      <button class="zoom-in" type="button" aria-label="Zoom in">+</button>
-    </div>
+    <div class="lightbox-help">Pinch or scroll to zoom · Drag to move</div>
     <button class="lightbox-close" type="button" aria-label="Close expanded artwork">×</button>
     <div class="lightbox-inner">
       <img src="" alt="">
@@ -258,17 +237,16 @@
     const lightbox = document.getElementById('lightbox');
     const lightboxImage = lightbox.querySelector('img');
     const closeButton = lightbox.querySelector('.lightbox-close');
-    const zoomInButton = lightbox.querySelector('.zoom-in');
-    const zoomOutButton = lightbox.querySelector('.zoom-out');
-    const zoomLevel = lightbox.querySelector('.zoom-level');
     const lightboxStage = lightbox.querySelector('.lightbox-inner');
-    const pointers = new Map();
     let zoom = 1;
     let panX = 0;
     let panY = 0;
-    let pinchStartDistance = null;
+    let pinchStartDistance = 0;
     let pinchStartZoom = 1;
-    let lastDragPoint = null;
+    let pinchStartPanX = 0;
+    let pinchStartPanY = 0;
+    let pinchStartMidpoint = null;
+    let dragStart = null;
 
     function setPan(x, y) {
       panX = x;
@@ -278,25 +256,44 @@
     }
 
     function setZoom(nextZoom) {
-      zoom = Math.min(5, Math.max(0.5, nextZoom));
+      zoom = Math.min(5, Math.max(1, nextZoom));
       lightboxImage.style.setProperty('--zoom', zoom);
-      zoomLevel.textContent = `${Math.round(zoom * 100)}%`;
-      zoomOutButton.disabled = zoom <= 0.5;
-      zoomInButton.disabled = zoom >= 5;
       if (zoom <= 1) setPan(0, 0);
     }
 
     function resetView() {
       setPan(0, 0);
       setZoom(1);
-      pointers.clear();
-      pinchStartDistance = null;
-      lastDragPoint = null;
+      pinchStartDistance = 0;
+      pinchStartMidpoint = null;
+      dragStart = null;
     }
 
-    function pointerDistance() {
-      const [first, second] = [...pointers.values()];
-      return Math.hypot(second.x - first.x, second.y - first.y);
+    function touchDistance(first, second) {
+      return Math.hypot(second.clientX - first.clientX, second.clientY - first.clientY);
+    }
+
+    function touchMidpoint(first, second) {
+      return {
+        x: (first.clientX + second.clientX) / 2,
+        y: (first.clientY + second.clientY) / 2
+      };
+    }
+
+    function zoomAround(nextZoom, screenX, screenY) {
+      const rect = lightboxStage.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const oldZoom = zoom;
+      const imageX = (screenX - centerX - panX) / oldZoom;
+      const imageY = (screenY - centerY - panY) / oldZoom;
+      setZoom(nextZoom);
+      if (zoom > 1) {
+        setPan(
+          screenX - centerX - imageX * zoom,
+          screenY - centerY - imageY * zoom
+        );
+      }
     }
 
     document.querySelectorAll('.art-piece button').forEach(button => {
@@ -309,50 +306,79 @@
       });
     });
 
-    zoomOutButton.addEventListener('click', () => setZoom(zoom - 0.25));
-    zoomInButton.addEventListener('click', () => setZoom(zoom + 0.25));
+    lightboxStage.addEventListener('touchstart', event => {
+      if (event.touches.length === 2) {
+        const first = event.touches[0];
+        const second = event.touches[1];
+        pinchStartDistance = touchDistance(first, second);
+        pinchStartZoom = zoom;
+        pinchStartPanX = panX;
+        pinchStartPanY = panY;
+        pinchStartMidpoint = touchMidpoint(first, second);
+        dragStart = null;
+      } else if (event.touches.length === 1) {
+        const touch = event.touches[0];
+        dragStart = { x: touch.clientX - panX, y: touch.clientY - panY };
+      }
+    }, { passive: false });
+
+    lightboxStage.addEventListener('touchmove', event => {
+      event.preventDefault();
+      if (event.touches.length === 2 && pinchStartDistance && pinchStartMidpoint) {
+        const first = event.touches[0];
+        const second = event.touches[1];
+        const midpoint = touchMidpoint(first, second);
+        const nextZoom = pinchStartZoom * (touchDistance(first, second) / pinchStartDistance);
+        const rect = lightboxStage.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const imageX = (pinchStartMidpoint.x - centerX - pinchStartPanX) / pinchStartZoom;
+        const imageY = (pinchStartMidpoint.y - centerY - pinchStartPanY) / pinchStartZoom;
+        setZoom(nextZoom);
+        if (zoom > 1) {
+          setPan(
+            midpoint.x - centerX - imageX * zoom,
+            midpoint.y - centerY - imageY * zoom
+          );
+        }
+      } else if (event.touches.length === 1 && dragStart && zoom > 1) {
+        const touch = event.touches[0];
+        setPan(touch.clientX - dragStart.x, touch.clientY - dragStart.y);
+      }
+    }, { passive: false });
+
+    lightboxStage.addEventListener('touchend', event => {
+      pinchStartDistance = 0;
+      pinchStartMidpoint = null;
+      if (event.touches.length === 1) {
+        const touch = event.touches[0];
+        dragStart = { x: touch.clientX - panX, y: touch.clientY - panY };
+      } else {
+        dragStart = null;
+      }
+    });
+
+    lightboxStage.addEventListener('wheel', event => {
+      event.preventDefault();
+      const factor = Math.exp(-event.deltaY * 0.002);
+      zoomAround(zoom * factor, event.clientX, event.clientY);
+    }, { passive: false });
 
     lightboxStage.addEventListener('pointerdown', event => {
+      if (event.pointerType !== 'mouse') return;
       lightboxStage.setPointerCapture(event.pointerId);
-      pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
-
-      if (pointers.size === 2) {
-        pinchStartDistance = pointerDistance();
-        pinchStartZoom = zoom;
-        lastDragPoint = null;
-      } else if (pointers.size === 1) {
-        lastDragPoint = { x: event.clientX, y: event.clientY };
-      }
+      dragStart = { x: event.clientX - panX, y: event.clientY - panY };
     });
 
     lightboxStage.addEventListener('pointermove', event => {
-      if (!pointers.has(event.pointerId)) return;
-      pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
-
-      if (pointers.size === 2 && pinchStartDistance) {
-        setZoom(pinchStartZoom * (pointerDistance() / pinchStartDistance));
-      } else if (pointers.size === 1 && lastDragPoint && zoom > 1) {
-        setPan(
-          panX + event.clientX - lastDragPoint.x,
-          panY + event.clientY - lastDragPoint.y
-        );
-        lastDragPoint = { x: event.clientX, y: event.clientY };
+      if (event.pointerType === 'mouse' && dragStart && zoom > 1) {
+        setPan(event.clientX - dragStart.x, event.clientY - dragStart.y);
       }
     });
 
-    function releasePointer(event) {
-      pointers.delete(event.pointerId);
-      pinchStartDistance = null;
-      if (pointers.size === 1) {
-        const remaining = [...pointers.values()][0];
-        lastDragPoint = { x: remaining.x, y: remaining.y };
-      } else {
-        lastDragPoint = null;
-      }
-    }
-
-    lightboxStage.addEventListener('pointerup', releasePointer);
-    lightboxStage.addEventListener('pointercancel', releasePointer);
+    lightboxStage.addEventListener('pointerup', () => { dragStart = null; });
+    lightboxStage.addEventListener('pointercancel', () => { dragStart = null; });
+    lightboxStage.addEventListener('dblclick', resetView);
     closeButton.addEventListener('click', () => lightbox.close());
     lightbox.addEventListener('click', event => {
       if (event.target === lightbox) lightbox.close();
