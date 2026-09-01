@@ -26,9 +26,9 @@
 
   <hr>
 
-  <!-- Currently Reading Section -->
+  <!-- Latest Reading Section -->
   <div class="section-bar bar-dark">
-    <h4>Currently Reading</h4>
+    <h4 id="latest-reading-heading">Latest Reads</h4>
   </div>
 
   <div class="content-block-left" id="currently-reading">
@@ -69,7 +69,7 @@
     </p>
   </div>
 
-  <!-- Script to load latest reading -->
+  <!-- Script to load latest reading list -->
   <script>
     fetch('readings.html')
       .then(r => r.text())
@@ -79,18 +79,13 @@
         
         if (latest) {
           const container = document.getElementById('currently-reading');
-          const title = latest.querySelector('p:first-of-type');
-          const quote = latest.querySelector('blockquote');
-          
-          let content = '';
-          if (title) {
-            content += `<p class="mb-small"><strong>${title.innerHTML}</strong></p>`;
+          const heading = document.getElementById('latest-reading-heading');
+
+          if (latest.dataset.heading) {
+            heading.textContent = latest.dataset.heading;
           }
-          if (quote) {
-            content += `<blockquote class="left-align">${quote.innerHTML}</blockquote>`;
-          }
-          
-          container.innerHTML = content;
+
+          container.innerHTML = latest.innerHTML;
         }
       })
       .catch(err => console.error('Failed to load reading:', err));
