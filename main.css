@@ -154,16 +154,10 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0 auto 4rem 1rem;
 }
 
-.reading-entry p:first-of-type {
+.reading-entry:not(.reading-list) > p:first-of-type {
   font-size: 1.1rem;
   font-weight: 500;
   margin-bottom: 0.5rem;
-}
-
-.reading-entry.reading-list p:first-of-type {
-  font-size: inherit;
-  font-weight: inherit;
-  margin-bottom: 1em;
 }
 
 .reading-meta {
