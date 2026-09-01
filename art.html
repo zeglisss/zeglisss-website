@@ -253,9 +253,14 @@
     let availableHeight = 0;
 
     function panLimits() {
+      const scaledWidth = fittedWidth * zoom;
+      const scaledHeight = fittedHeight * zoom;
       return {
-        x: Math.max(0, (fittedWidth * zoom - availableWidth) / 2),
-        y: Math.max(0, (fittedHeight * zoom - availableHeight) / 2)
+        // If an artwork is smaller than the stage on one axis, let it move
+        // through the empty letterbox space instead of locking that axis.
+        // If it is larger, use the same value as the normal overflow bound.
+        x: Math.abs(scaledWidth - availableWidth) / 2,
+        y: Math.abs(scaledHeight - availableHeight) / 2
       };
     }
 
