@@ -57,6 +57,15 @@
       margin-right: auto;
     }
 
+    .gallery-instruction {
+      margin: 0 1rem 0.75rem;
+      color: #6c757d;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-align: right;
+      text-transform: uppercase;
+    }
+
     .lightbox {
       width: 100vw;
       height: 100vh;
@@ -75,16 +84,19 @@
     .lightbox-inner {
       width: 100%;
       height: 100%;
-      display: grid;
-      place-items: center;
-      padding: 3rem;
+      overflow: auto;
+      padding: 4rem 3rem 3rem;
       box-sizing: border-box;
+      text-align: center;
     }
 
     .lightbox img {
-      max-width: 100%;
-      max-height: 100%;
+      width: auto;
+      height: auto;
+      max-width: calc((100vw - 6rem) * var(--zoom, 1));
+      max-height: calc((100vh - 7rem) * var(--zoom, 1));
       object-fit: contain;
+      vertical-align: middle;
     }
 
     .lightbox-close {
@@ -98,6 +110,33 @@
       cursor: pointer;
     }
 
+    .zoom-controls {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: #6c757d;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+
+    .zoom-controls button {
+      min-width: 2rem;
+      padding: 0.2rem 0.45rem;
+      border: 1px solid #d7d7d7;
+      background: rgba(255, 255, 255, 0.9);
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .zoom-level {
+      min-width: 3.25rem;
+      text-align: center;
+    }
+
     @media (max-width: 520px) {
       .art-gallery {
         grid-template-columns: 1fr;
@@ -106,7 +145,12 @@
       }
 
       .lightbox-inner {
-        padding: 3.5rem 1rem 1rem;
+        padding: 4rem 1rem 1rem;
+      }
+
+      .lightbox img {
+        max-width: calc((100vw - 2rem) * var(--zoom, 1));
+        max-height: calc((100vh - 5rem) * var(--zoom, 1));
       }
     }
   </style>
@@ -126,6 +170,7 @@
     <hr style="margin: 2.5rem 0 0.75rem 0;">
     <h6></h6>
   </div>
+  <p class="gallery-instruction">Click to expand</p>
   <main class="art-gallery">
     <div class="art-piece" data-title="Scrap Collector" data-date="June 2026">
       <button type="button" data-full="images/art/scrap-collector-june-2026.jpg" aria-label="Expand Scrap Collector">
@@ -195,6 +240,11 @@
   </main>
 
   <dialog class="lightbox" id="lightbox" aria-label="Expanded artwork">
+    <div class="zoom-controls" aria-label="Zoom controls">
+      <button class="zoom-out" type="button" aria-label="Zoom out">−</button>
+      <span class="zoom-level" aria-live="polite">100%</span>
+      <button class="zoom-in" type="button" aria-label="Zoom in">+</button>
+    </div>
     <button class="lightbox-close" type="button" aria-label="Close expanded artwork">×</button>
     <div class="lightbox-inner">
       <img src="" alt="">
@@ -205,16 +255,31 @@
     const lightbox = document.getElementById('lightbox');
     const lightboxImage = lightbox.querySelector('img');
     const closeButton = lightbox.querySelector('.lightbox-close');
+    const zoomInButton = lightbox.querySelector('.zoom-in');
+    const zoomOutButton = lightbox.querySelector('.zoom-out');
+    const zoomLevel = lightbox.querySelector('.zoom-level');
+    let zoom = 1;
+
+    function setZoom(nextZoom) {
+      zoom = Math.min(3, Math.max(0.5, nextZoom));
+      lightboxImage.style.setProperty('--zoom', zoom);
+      zoomLevel.textContent = `${Math.round(zoom * 100)}%`;
+      zoomOutButton.disabled = zoom <= 0.5;
+      zoomInButton.disabled = zoom >= 3;
+    }
 
     document.querySelectorAll('.art-piece button').forEach(button => {
       button.addEventListener('click', () => {
         const thumbnail = button.querySelector('img');
         lightboxImage.src = button.dataset.full;
         lightboxImage.alt = thumbnail.alt;
+        setZoom(1);
         lightbox.showModal();
       });
     });
 
+    zoomOutButton.addEventListener('click', () => setZoom(zoom - 0.25));
+    zoomInButton.addEventListener('click', () => setZoom(zoom + 0.25));
     closeButton.addEventListener('click', () => lightbox.close());
     lightbox.addEventListener('click', event => {
       if (event.target === lightbox) lightbox.close();
