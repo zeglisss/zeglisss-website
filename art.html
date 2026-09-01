@@ -8,8 +8,9 @@
   <style>
     .art-gallery {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 2rem 1.25rem;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      align-items: start;
+      gap: 1.25rem;
       padding: 0 1rem;
       max-width: 1400px;
       margin: 0 auto 4rem;
@@ -19,39 +20,87 @@
       min-width: 0;
     }
 
-    .art-piece a {
+    .art-piece button {
       display: block;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: zoom-in;
     }
 
     .art-piece img {
       width: 100%;
-      aspect-ratio: 1 / 1;
-      object-fit: contain;
+      height: auto;
       display: block;
-      margin-bottom: 0.75rem;
-      background: #f7f7f7;
     }
 
-    .art-caption {
-      margin: 0;
-      text-align: right;
-    }
-
-    .art-caption h5 {
-      font-weight: 500;
-      margin: 0 0 0.1rem;
-    }
-
-    .art-caption .meta {
-      font-size: 0.85rem;
+    .art-piece::after {
+      content: attr(data-title) "\A" "Mixed-media collage. · " attr(data-date);
+      display: block;
+      margin-top: 0.45rem;
       color: #6c757d;
+      font-size: 0.8rem;
+      text-align: right;
+      white-space: pre-line;
+    }
+
+    .art-piece button:focus-visible {
+      outline: 2px solid #343a40;
+      outline-offset: 4px;
+    }
+
+    .lightbox {
+      width: 100vw;
+      height: 100vh;
+      max-width: none;
+      max-height: none;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      background: rgba(255, 255, 255, 0.96);
+    }
+
+    .lightbox::backdrop {
+      background: rgba(255, 255, 255, 0.96);
+    }
+
+    .lightbox-inner {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      padding: 3rem;
+      box-sizing: border-box;
+    }
+
+    .lightbox img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .lightbox-close {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      border: 0;
+      background: transparent;
+      font-size: 2rem;
+      line-height: 1;
+      cursor: pointer;
     }
 
     @media (max-width: 520px) {
       .art-gallery {
         grid-template-columns: 1fr;
-        gap: 2.5rem;
+        gap: 1rem;
         padding: 0 0.5rem;
+      }
+
+      .lightbox-inner {
+        padding: 3.5rem 1rem 1rem;
       }
     }
   </style>
@@ -72,57 +121,99 @@
     <h6></h6>
   </div>
   <main class="art-gallery">
-    <!-- Copy one art-piece block to add another work. -->
-    <div class="art-piece">
-      <a href="https://i.imgur.com/75W42rY.jpeg">
-        <img src="https://i.imgur.com/75W42rY.jpeg" alt="Terrain" loading="lazy">
-      </a>
-      <div class="art-caption">
-        <h5>Terrain</h5>
-        <div class="meta">Mixed media collage · 2025</div>
-      </div>
+    <div class="art-piece" data-title="All Things Fall" data-date="Spring 2026">
+      <button type="button" data-full="images/art/all-things-fall.jpg" aria-label="Expand All Things Fall">
+        <img src="images/art/all-things-fall.jpg" alt="All Things Fall" loading="lazy">
+      </button>
     </div>
-
-    <div class="art-piece">
-      <a href="https://i.imgur.com/TRMEMPQ.jpeg">
-        <img src="https://i.imgur.com/TRMEMPQ.jpeg" alt="Endure" loading="lazy">
-      </a>
-      <div class="art-caption">
-        <h5>Endure</h5>
-        <div class="meta">Mixed media collage · 2025</div>
-      </div>
+    <div class="art-piece" data-title="Drive" data-date="2025">
+      <button type="button" data-full="images/art/drive.jpg" aria-label="Expand Drive">
+        <img src="images/art/drive.jpg" alt="Drive" loading="lazy">
+      </button>
     </div>
-
-    <div class="art-piece">
-      <a href="https://i.imgur.com/z3eK2xv.jpeg">
-        <img src="https://i.imgur.com/z3eK2xv.jpeg" alt="Detail" loading="lazy">
-      </a>
-      <div class="art-caption">
-        <h5>Detail</h5>
-        <div class="meta">Mixed media collage · 2025</div>
-      </div>
+    <div class="art-piece" data-title="Faucet Castle Fire Escape" data-date="Spring 2026">
+      <button type="button" data-full="images/art/faucet-castle-fire-escape.jpg" aria-label="Expand Faucet Castle Fire Escape">
+        <img src="images/art/faucet-castle-fire-escape.jpg" alt="Faucet Castle Fire Escape" loading="lazy">
+      </button>
     </div>
-
-    <div class="art-piece">
-      <a href="https://i.imgur.com/5k1RdQz.jpeg">
-        <img src="https://i.imgur.com/5k1RdQz.jpeg" alt="Never Miss" loading="lazy">
-      </a>
-      <div class="art-caption">
-        <h5>Never Miss</h5>
-        <div class="meta">Mixed media collage · 2025</div>
-      </div>
+    <div class="art-piece" data-title="Gallery" data-date="2025">
+      <button type="button" data-full="images/art/gallery.jpg" aria-label="Expand Gallery">
+        <img src="images/art/gallery.jpg" alt="Gallery" loading="lazy">
+      </button>
     </div>
-
-    <div class="art-piece">
-      <a href="https://i.imgur.com/VIPG2Vo.jpeg">
-        <img src="https://i.imgur.com/VIPG2Vo.jpeg" alt="Drive" loading="lazy">
-      </a>
-      <div class="art-caption">
-        <h5>Drive</h5>
-        <div class="meta">Mixed media collage · 2025</div>
-      </div>
+    <div class="art-piece" data-title="Greyscale Red" data-date="2025">
+      <button type="button" data-full="images/art/greyscale-red.jpg" aria-label="Expand Greyscale Red">
+        <img src="images/art/greyscale-red.jpg" alt="Greyscale Red" loading="lazy">
+      </button>
+    </div>
+    <div class="art-piece" data-title="Hand Throwing Fire and Tassel Hair" data-date="Spring 2026">
+      <button type="button" data-full="images/art/hand-throwing-fire-and-tassel-hair.jpg" aria-label="Expand Hand Throwing Fire and Tassel Hair">
+        <img src="images/art/hand-throwing-fire-and-tassel-hair.jpg" alt="Hand Throwing Fire and Tassel Hair" loading="lazy">
+      </button>
+    </div>
+    <div class="art-piece" data-title="Heart I Know" data-date="2025">
+      <button type="button" data-full="images/art/heart-i-know.jpg" aria-label="Expand Heart I Know">
+        <img src="images/art/heart-i-know.jpg" alt="Heart I Know" loading="lazy">
+      </button>
+    </div>
+    <div class="art-piece" data-title="Never Miss" data-date="Summer 2025">
+      <button type="button" data-full="images/art/never-miss.jpg" aria-label="Expand Never Miss">
+        <img src="images/art/never-miss.jpg" alt="Never Miss" loading="lazy">
+      </button>
+    </div>
+    <div class="art-piece" data-title="Scrap Collector" data-date="June 2026">
+      <button type="button" data-full="images/art/scrap-collector-june-2026.jpg" aria-label="Expand Scrap Collector">
+        <img src="images/art/scrap-collector-june-2026.jpg" alt="Scrap Collector" loading="lazy">
+      </button>
+    </div>
+    <div class="art-piece" data-title="Skylines and Blue Boat and Roads" data-date="Spring 2026">
+      <button type="button" data-full="images/art/skylines-blue-boat-roads.jpg" aria-label="Expand Skylines and Blue Boat and Roads">
+        <img src="images/art/skylines-blue-boat-roads.jpg" alt="Skylines and Blue Boat and Roads" loading="lazy">
+      </button>
+    </div>
+    <div class="art-piece" data-title="Texture Lilypad Sheep" data-date="Summer 2025">
+      <button type="button" data-full="images/art/texture-lilypad-sheep.jpg" aria-label="Expand Texture Lilypad Sheep">
+        <img src="images/art/texture-lilypad-sheep.jpg" alt="Texture Lilypad Sheep" loading="lazy">
+      </button>
+    </div>
+    <div class="art-piece" data-title="The Enduring Horizon" data-date="Spring 2025">
+      <button type="button" data-full="images/art/the-enduring-horizon.jpg" aria-label="Expand The Enduring Horizon">
+        <img src="images/art/the-enduring-horizon.jpg" alt="The Enduring Horizon" loading="lazy">
+      </button>
+    </div>
+    <div class="art-piece" data-title="Woman Red and Black Lines Calendar" data-date="Spring 2026">
+      <button type="button" data-full="images/art/woman-red-black-lines-calendar.jpg" aria-label="Expand Woman Red and Black Lines Calendar">
+        <img src="images/art/woman-red-black-lines-calendar.jpg" alt="Woman Red and Black Lines Calendar" loading="lazy">
+      </button>
     </div>
   </main>
+
+  <dialog class="lightbox" id="lightbox" aria-label="Expanded artwork">
+    <button class="lightbox-close" type="button" aria-label="Close expanded artwork">×</button>
+    <div class="lightbox-inner">
+      <img src="" alt="">
+    </div>
+  </dialog>
+
+  <script>
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImage = lightbox.querySelector('img');
+    const closeButton = lightbox.querySelector('.lightbox-close');
+
+    document.querySelectorAll('.art-piece button').forEach(button => {
+      button.addEventListener('click', () => {
+        const thumbnail = button.querySelector('img');
+        lightboxImage.src = button.dataset.full;
+        lightboxImage.alt = thumbnail.alt;
+        lightbox.showModal();
+      });
+    });
+
+    closeButton.addEventListener('click', () => lightbox.close());
+    lightbox.addEventListener('click', event => {
+      if (event.target === lightbox) lightbox.close();
+    });
+  </script>
 
   <hr>
 
