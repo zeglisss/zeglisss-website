@@ -84,19 +84,26 @@
     .lightbox-inner {
       width: 100%;
       height: 100%;
-      overflow: auto;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
       padding: 4rem 3rem 3rem;
       box-sizing: border-box;
-      text-align: center;
+      touch-action: none;
+      cursor: grab;
     }
 
     .lightbox img {
       width: auto;
       height: auto;
-      max-width: calc((100vw - 6rem) * var(--zoom, 1));
-      max-height: calc((100vh - 7rem) * var(--zoom, 1));
+      max-width: 100%;
+      max-height: 100%;
       object-fit: contain;
-      vertical-align: middle;
+      transform: translate(var(--pan-x, 0px), var(--pan-y, 0px)) scale(var(--zoom, 1));
+      transform-origin: center;
+      user-select: none;
+      -webkit-user-drag: none;
+      will-change: transform;
     }
 
     .lightbox-close {
@@ -148,10 +155,6 @@
         padding: 4rem 1rem 1rem;
       }
 
-      .lightbox img {
-        max-width: calc((100vw - 2rem) * var(--zoom, 1));
-        max-height: calc((100vh - 5rem) * var(--zoom, 1));
-      }
     }
   </style>
 </head>
@@ -258,14 +261,42 @@
     const zoomInButton = lightbox.querySelector('.zoom-in');
     const zoomOutButton = lightbox.querySelector('.zoom-out');
     const zoomLevel = lightbox.querySelector('.zoom-level');
+    const lightboxStage = lightbox.querySelector('.lightbox-inner');
+    const pointers = new Map();
     let zoom = 1;
+    let panX = 0;
+    let panY = 0;
+    let pinchStartDistance = null;
+    let pinchStartZoom = 1;
+    let lastDragPoint = null;
+
+    function setPan(x, y) {
+      panX = x;
+      panY = y;
+      lightboxImage.style.setProperty('--pan-x', `${panX}px`);
+      lightboxImage.style.setProperty('--pan-y', `${panY}px`);
+    }
 
     function setZoom(nextZoom) {
-      zoom = Math.min(3, Math.max(0.5, nextZoom));
+      zoom = Math.min(5, Math.max(0.5, nextZoom));
       lightboxImage.style.setProperty('--zoom', zoom);
       zoomLevel.textContent = `${Math.round(zoom * 100)}%`;
       zoomOutButton.disabled = zoom <= 0.5;
-      zoomInButton.disabled = zoom >= 3;
+      zoomInButton.disabled = zoom >= 5;
+      if (zoom <= 1) setPan(0, 0);
+    }
+
+    function resetView() {
+      setPan(0, 0);
+      setZoom(1);
+      pointers.clear();
+      pinchStartDistance = null;
+      lastDragPoint = null;
+    }
+
+    function pointerDistance() {
+      const [first, second] = [...pointers.values()];
+      return Math.hypot(second.x - first.x, second.y - first.y);
     }
 
     document.querySelectorAll('.art-piece button').forEach(button => {
@@ -273,13 +304,55 @@
         const thumbnail = button.querySelector('img');
         lightboxImage.src = button.dataset.full;
         lightboxImage.alt = thumbnail.alt;
-        setZoom(1);
+        resetView();
         lightbox.showModal();
       });
     });
 
     zoomOutButton.addEventListener('click', () => setZoom(zoom - 0.25));
     zoomInButton.addEventListener('click', () => setZoom(zoom + 0.25));
+
+    lightboxStage.addEventListener('pointerdown', event => {
+      lightboxStage.setPointerCapture(event.pointerId);
+      pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+      if (pointers.size === 2) {
+        pinchStartDistance = pointerDistance();
+        pinchStartZoom = zoom;
+        lastDragPoint = null;
+      } else if (pointers.size === 1) {
+        lastDragPoint = { x: event.clientX, y: event.clientY };
+      }
+    });
+
+    lightboxStage.addEventListener('pointermove', event => {
+      if (!pointers.has(event.pointerId)) return;
+      pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+      if (pointers.size === 2 && pinchStartDistance) {
+        setZoom(pinchStartZoom * (pointerDistance() / pinchStartDistance));
+      } else if (pointers.size === 1 && lastDragPoint && zoom > 1) {
+        setPan(
+          panX + event.clientX - lastDragPoint.x,
+          panY + event.clientY - lastDragPoint.y
+        );
+        lastDragPoint = { x: event.clientX, y: event.clientY };
+      }
+    });
+
+    function releasePointer(event) {
+      pointers.delete(event.pointerId);
+      pinchStartDistance = null;
+      if (pointers.size === 1) {
+        const remaining = [...pointers.values()][0];
+        lastDragPoint = { x: remaining.x, y: remaining.y };
+      } else {
+        lastDragPoint = null;
+      }
+    }
+
+    lightboxStage.addEventListener('pointerup', releasePointer);
+    lightboxStage.addEventListener('pointercancel', releasePointer);
     closeButton.addEventListener('click', () => lightbox.close());
     lightbox.addEventListener('click', event => {
       if (event.target === lightbox) lightbox.close();
