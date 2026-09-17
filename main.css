@@ -148,6 +148,45 @@ h1, h2, h3, h4, h5, h6 {
   color: #6c757d;
 }
 
+/* === Writing Award === */
+.award-note {
+  max-width: 700px;
+  margin: 0 1rem 3rem auto;
+  text-align: right;
+}
+
+.award-note h3 {
+  margin: 0 0 0.2rem;
+  font-size: 1.15rem;
+  font-weight: 500;
+}
+
+.award-intro {
+  margin: 0 0 1.25rem;
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+.award-note blockquote {
+  max-width: none;
+  margin: 0;
+  padding: 0 1rem 0 0;
+  border-left: 0;
+  border-right: 3px solid #ccc;
+  color: #333;
+  font-style: normal;
+}
+
+.award-note blockquote p {
+  margin: 0;
+}
+
+.award-note blockquote footer {
+  margin-top: 0.75rem;
+  color: #6c757d;
+  font-size: 0.85rem;
+}
+
 /* === Reading Entries === */
 .reading-entry {
   max-width: 800px;
@@ -272,6 +311,7 @@ blockquote {
   .content-block,
   .content-block-left,
   .entry,
+  .award-note,
   .reading-entry {
     margin-left: 0.5rem;
     margin-right: 0.5rem;
